@@ -6,5 +6,11 @@ module Tapp
     def grep(*)
       system 'git', 'grep', '--word-regexp', '-e', 'tapp', *ARGV.drop(1)
     end
+
+    desc 'remove [<git-grep-options>]', 'Remove tapp'
+    def remove(*)
+      paths = `git grep --word-regexp -e tapp --files-without-match #{ARGV.drop(1).join(' ')}`.split("\n")
+      system 'sed', '--expression', 's/\b\.\?tapp\b\((.*)\|{.*}\)\?//g', '--in-place', *paths
+    end
   end
 end
